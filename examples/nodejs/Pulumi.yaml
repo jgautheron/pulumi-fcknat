@@ -1,0 +1,6 @@
+name: provider-xyz
+runtime: nodejs
+plugins:
+  providers:
+    - name: xyz
+      path: ../../bin

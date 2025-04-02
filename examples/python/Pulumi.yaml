@@ -1,0 +1,6 @@
+name: provider-xyz
+runtime: python
+plugins:
+  providers:
+    - name: xyz
+      path: ../../bin
