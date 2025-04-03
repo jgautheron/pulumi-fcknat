@@ -1,4 +1,4 @@
-module github.com/pulumi/pulumi-xyz
+module github.com/jgautheron/pulumi-fcknat
 
 go 1.24
 
@@ -6,8 +6,8 @@ toolchain go1.24.1
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
+	github.com/pulumi/pulumi-aws/sdk/v6 v6.74.0
 	github.com/pulumi/pulumi-go-provider v0.25.0
-	github.com/pulumi/pulumi-random/sdk/v4 v4.18.0
 	github.com/pulumi/pulumi/sdk/v3 v3.160.0
 	github.com/stretchr/testify v1.10.0
 )

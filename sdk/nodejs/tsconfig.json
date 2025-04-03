@@ -13,12 +13,9 @@
         "strict": true
     },
     "files": [
-        "config/index.ts",
-        "config/vars.ts",
+        "fckNat.ts",
         "index.ts",
         "provider.ts",
-        "random.ts",
-        "randomComponent.ts",
         "utilities.ts"
     ]
 }

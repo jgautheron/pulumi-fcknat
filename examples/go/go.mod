@@ -1,7 +1,5 @@
-module provider-xyz
+module provider-fcknat
 
 go 1.20
 
-require (
-	github.com/pulumi/pulumi/sdk/v3 v3.160.0
-)
+require github.com/pulumi/pulumi/sdk/v3 v3.30.0

@@ -18,22 +18,11 @@ __all__ = ['ProviderArgs', 'Provider']
 
 @pulumi.input_type
 class ProviderArgs:
-    def __init__(__self__, *,
-                 itsasecret: Optional[pulumi.Input[bool]] = None):
+    def __init__(__self__):
         """
         The set of arguments for constructing a Provider resource.
         """
-        if itsasecret is not None:
-            pulumi.set(__self__, "itsasecret", itsasecret)
-
-    @property
-    @pulumi.getter
-    def itsasecret(self) -> Optional[pulumi.Input[bool]]:
-        return pulumi.get(self, "itsasecret")
-
-    @itsasecret.setter
-    def itsasecret(self, value: Optional[pulumi.Input[bool]]):
-        pulumi.set(self, "itsasecret", value)
+        pass
 
 
 class Provider(pulumi.ProviderResource):
@@ -41,10 +30,9 @@ class Provider(pulumi.ProviderResource):
     def __init__(__self__,
                  resource_name: str,
                  opts: Optional[pulumi.ResourceOptions] = None,
-                 itsasecret: Optional[pulumi.Input[bool]] = None,
                  __props__=None):
         """
-        Create a Xyz resource with the given unique name, props, and options.
+        Create a Fcknat resource with the given unique name, props, and options.
         :param str resource_name: The name of the resource.
         :param pulumi.ResourceOptions opts: Options for the resource.
         """
@@ -55,7 +43,7 @@ class Provider(pulumi.ProviderResource):
                  args: Optional[ProviderArgs] = None,
                  opts: Optional[pulumi.ResourceOptions] = None):
         """
-        Create a Xyz resource with the given unique name, props, and options.
+        Create a Fcknat resource with the given unique name, props, and options.
         :param str resource_name: The name of the resource.
         :param ProviderArgs args: The arguments to use to populate this resource's properties.
         :param pulumi.ResourceOptions opts: Options for the resource.
@@ -71,7 +59,6 @@ class Provider(pulumi.ProviderResource):
     def _internal_init(__self__,
                  resource_name: str,
                  opts: Optional[pulumi.ResourceOptions] = None,
-                 itsasecret: Optional[pulumi.Input[bool]] = None,
                  __props__=None):
         opts = pulumi.ResourceOptions.merge(_utilities.get_resource_opts_defaults(), opts)
         if not isinstance(opts, pulumi.ResourceOptions):
@@ -81,9 +68,8 @@ class Provider(pulumi.ProviderResource):
                 raise TypeError('__props__ is only valid when passed in combination with a valid opts.id to get an existing resource')
             __props__ = ProviderArgs.__new__(ProviderArgs)
 
-            __props__.__dict__["itsasecret"] = pulumi.Output.from_input(itsasecret).apply(pulumi.runtime.to_json) if itsasecret is not None else None
         super(Provider, __self__).__init__(
-            'xyz',
+            'fcknat',
             resource_name,
             __props__,
             opts)

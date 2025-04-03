@@ -1,7 +1,27 @@
-import * as pulumi from "@pulumi/pulumi";
-import * as xyz from "@pulumi/xyz";
+import * as fcknat from "@pulumi/fcknat";
 
-const myRandomResource = new xyz.Random("myRandomResource", {length: 24});
-export const output = {
-    value: myRandomResource.result,
+const myFckNat = new fcknat.FckNat("myFckNat", {
+    name: "example-fcknat",
+    vpcId: "vpc-1234567890",
+    subnetId: "subnet-1234567890",
+    instanceType: "t4g.nano",
+    haMode: false,
+    useSpotInstances: true,
+    useSsh: false,
+    encryption: true,
+    updateRouteTables: true,
+    attachSsmPolicy: true,
+    tags: {
+        Environment: "dev",
+        ManagedBy: "pulumi",
+    },
+});
+export const securityGroupId = {
+    value: myFckNat.securityGroupId,
+};
+export const instanceId = {
+    value: myFckNat.instanceId,
+};
+export const publicIp = {
+    value: myFckNat.publicIp,
 };
