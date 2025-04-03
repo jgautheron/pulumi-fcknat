@@ -4,17 +4,42 @@ plugins:
   providers:
     - name: fcknat
       path: ../../bin
+  packages:
+    - name: aws
+      version: ">=6.0.0"
+
+variables:
+  vpc:
+    fn::invoke:
+      function: aws:ec2:getVpc
+      arguments:
+        default: true
+      return: id
+  subnet:
+    fn::invoke:
+      function: aws:ec2:getSubnet
+      arguments:
+        vpcId: ${vpc}
+        defaultForAz: true
+        availabilityZone: "us-east-1a"
+      return: id
 
 resources:
-  myRandomResource:
-    type: fcknat:Random
+  myFckNat:
+    type: fcknat:Gateway
     properties:
-      length: 24
-  myRandomComponent:
-    type: fcknat:RandomComponent
-    properties:
-      length: 24
+      name: test-fcknat
+      vpcId: ${vpc}
+      subnetId: ${subnet}
+      instanceType: t4g.nano
+      useSsh: true
+      sshCidrBlocksIpv4:
+        - "10.0.0.0/8"
 
 outputs:
-  output:
-    value: ${myRandomResource.result}
+  securityGroupId:
+    value: ${myFckNat.securityGroupId}
+  privateIp:
+    value: ${myFckNat.privateIp}
+  publicIp:
+    value: ${myFckNat.publicIp}

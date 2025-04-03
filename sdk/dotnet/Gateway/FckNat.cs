@@ -7,9 +7,9 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Fcknat
+namespace Pulumi.Fcknat.Gateway
 {
-    [FcknatResourceType("fcknat:index:FckNat")]
+    [FcknatResourceType("fcknat:Gateway:FckNat")]
     public partial class FckNat : global::Pulumi.ComponentResource
     {
         [Output("autoScalingGroupArn")]
@@ -48,7 +48,7 @@ namespace Pulumi.Fcknat
         /// <param name="args">The arguments used to populate this resource's properties</param>
         /// <param name="options">A bag of options that control this resource's behavior</param>
         public FckNat(string name, FckNatArgs args, ComponentResourceOptions? options = null)
-            : base("fcknat:index:FckNat", name, args ?? new FckNatArgs(), MakeResourceOptions(options, ""), remote: true)
+            : base("fcknat:Gateway:FckNat", name, args ?? new FckNatArgs(), MakeResourceOptions(options, ""), remote: true)
         {
         }
 

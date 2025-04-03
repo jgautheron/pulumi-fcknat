@@ -5,17 +5,24 @@
 from . import _utilities
 import typing
 # Export this package's modules as members:
-from .fck_nat import *
 from .provider import *
+
+# Make subpackages available:
+if typing.TYPE_CHECKING:
+    import pulumi_fcknat.gateway as __gateway
+    gateway = __gateway
+else:
+    gateway = _utilities.lazy_import('pulumi_fcknat.gateway')
+
 _utilities.register(
     resource_modules="""
 [
  {
   "pkg": "fcknat",
-  "mod": "index",
-  "fqn": "pulumi_fcknat",
+  "mod": "Gateway",
+  "fqn": "pulumi_fcknat.gateway",
   "classes": {
-   "fcknat:index:FckNat": "FckNat"
+   "fcknat:Gateway:FckNat": "FckNat"
   }
  }
 ]

@@ -33,7 +33,7 @@ func Provider() p.Provider {
 			infer.Component(NewFckNat),
 		},
 		ModuleMap: map[tokens.ModuleName]tokens.ModuleName{
-			"provider": "index",
+			"provider": "Gateway",
 		},
 	})
 }

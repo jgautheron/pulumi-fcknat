@@ -12,7 +12,7 @@ if sys.version_info >= (3, 11):
     from typing import NotRequired, TypedDict, TypeAlias
 else:
     from typing_extensions import NotRequired, TypedDict, TypeAlias
-from . import _utilities
+from .. import _utilities
 
 __all__ = ['FckNatArgs', 'FckNat']
 
@@ -472,7 +472,7 @@ class FckNat(pulumi.ComponentResource):
             __props__.__dict__["public_ip"] = None
             __props__.__dict__["security_group_id"] = None
         super(FckNat, __self__).__init__(
-            'fcknat:index:FckNat',
+            'fcknat:Gateway:FckNat',
             resource_name,
             __props__,
             opts,

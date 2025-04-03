@@ -1,113 +1,124 @@
-# Pulumi Native Provider Boilerplate
+# Pulumi fcknat Provider
 
-This repository is a boilerplate showing how to create and locally test a native Pulumi provider (with examples of both CustomResource and ComponentResource [resource types](https://www.pulumi.com/docs/iac/concepts/resources/)). 
+This repository contains a Pulumi native provider for fcknat, an alternative to AWS NAT gateways. This provider allows you to create and manage fcknat resources in your AWS infrastructure.
 
-## Authoring a Pulumi Native Provider
+## Overview
 
-This boilerplate creates a working Pulumi-owned provider named `fcknat`.
-It implements a random number generator that you can [build and test out for yourself](#test-against-the-example) and then replace the Random code with code specific to your provider.
+The fcknat provider implements a cost-effective alternative to AWS NAT gateways, giving you similar functionality with more flexibility and at a lower cost.
 
+## Installing
 
-### Prerequisites
+This package is available for several languages/platforms:
+
+- JavaScript/TypeScript: `npm install @jgautheron/fcknat`
+- Python: `pip install pulumi_fcknat`
+- Go: `import "github.com/jgautheron/pulumi-fcknat/sdk/go/fcknat"`
+- .NET: `dotnet add package jgautheron.fcknat`
+
+## Prerequisites
 
 You will need to ensure the following tools are installed and present in your `$PATH`:
 
-* [`pulumictl`](https://github.com/pulumi/pulumictl#installation)
-* [Go 1.21](https://golang.org/dl/) or 1.latest
-* [NodeJS](https://nodejs.org/en/) 14.x.  We recommend using [nvm](https://github.com/nvm-sh/nvm) to manage NodeJS installations.
-* [Yarn](https://yarnpkg.com/)
-* [TypeScript](https://www.typescriptlang.org/)
-* [Python](https://www.python.org/downloads/) (called as `python3`).  For recent versions of MacOS, the system-installed version is fine.
-* [.NET](https://dotnet.microsoft.com/download)
+- [`pulumictl`](https://github.com/pulumi/pulumictl#installation)
+- [Go 1.21](https://golang.org/dl/) or 1.latest
+- [NodeJS](https://nodejs.org/en/) 14.x or later
+- [Yarn](https://yarnpkg.com/)
+- [Python](https://www.python.org/downloads/) 3.9 or later (called as `python3`)
+- [.NET](https://dotnet.microsoft.com/download)
 
+## Building the Provider
 
-### Build & test the boilerplate XYZ provider
+### Build and Install
 
-1. Run `make build install` to build and install the provider.
-1. Run `make gen_examples` to generate the example programs in `examples/` off of the source `examples/yaml` example program.
-1. Run `make up` to run the example program in `examples/yaml`.
-1. Run `make down` to tear down the example program.
+Run `make build install` to build and install the provider:
 
-### Creating a new provider repository
+```bash
+$ make build install
+```
 
-Pulumi offers this repository as a [GitHub template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) for convenience.  From this repository:
+This will:
 
-1. Click "Use this template".
-1. Set the following options:
-   * Owner: pulumi 
-   * Repository name: pulumi-fcknat (replace "fcknat" with the name of your provider)
-   * Description: Pulumi provider for fcknat
-   * Repository type: Public
-1. Clone the generated repository.
+1. Build the provider binary and place it in a `./bin` folder
+2. Generate the Go, Node.js, Python, and .NET SDKs
+3. Install the provider on your machine
 
-From the templated repository:
+For Python SDK installation, a virtual environment is automatically created to avoid conflicts with system Python packages.
 
-1. Run the following command to update files to use the name of your provider (third-party: use your GitHub organization/username):
+### Clean Build Artifacts
 
-    ```bash
-    make prepare NAME=foo ORG=myorg REPOSITORY=github.com/myorg/pulumi-foo
-    ```
+To clean up build artifacts and virtual environments:
 
-   This will do the following:
-   - rename folders in `provider/cmd` to `pulumi-resource-{NAME}`
-   - replace dependencies in `provider/go.mod` to reflect your repository name
-   - find and replace all instances of the boilerplate `fcknat` with the `NAME` of your provider.
-   - find and replace all instances of the boilerplate `jgautheron` with the `ORG` of your provider.
-   - replace all instances of the `github.com/jgautheron/pulumi-fcknat` repository with the `REPOSITORY` location
+```bash
+$ make clean
+```
 
-#### Build the provider and install the plugin
+## Usage Example
+
+Here's a simple example of using the fcknat provider to create a NAT instance:
+
+```typescript
+import * as pulumi from "@pulumi/pulumi";
+import * as aws from "@pulumi/aws";
+import * as fcknat from "@jgautheron/fcknat";
+
+// Get the default VPC and a subnet
+const vpc = aws.ec2.getVpcOutput({ default: true });
+const subnet = aws.ec2.getSubnetOutput({
+  vpcId: vpc.id,
+  defaultForAz: true,
+  availabilityZone: "us-east-1a",
+});
+
+// Create a fck-nat instance
+const nat = new fcknat.FckNat("my-nat", {
+  name: "my-nat",
+  vpcId: vpc.id,
+  subnetId: subnet.id,
+  // Optional parameters
+  instanceType: "t4g.nano",
+  haMode: true,
+  useSsh: true,
+  sshCidrBlocksIpv4: ["10.0.0.0/8"],
+});
+
+// Export the outputs
+export const securityGroupId = nat.securityGroupId;
+export const privateIp = nat.privateIp;
+export const publicIp = nat.publicIp;
+```
+
+## Contributing
+
+### Building and Testing Locally
+
+1. Build and install the provider:
 
    ```bash
    $ make build install
    ```
-   
-This will:
 
-1. Create the SDK codegen binary and place it in a `./bin` folder (gitignored)
-2. Create the provider binary and place it in the `./bin` folder (gitignored)
-3. Generate the dotnet, Go, Node, and Python SDKs and place them in the `./sdk` folder
-4. Install the provider on your machine.
+2. Create a simple test program:
+   ```bash
+   $ cd examples/typescript
+   $ yarn link @jgautheron/fcknat
+   $ yarn install
+   $ pulumi stack init test
+   $ pulumi preview
+   ```
 
-#### Test against the example
-   
-```bash
-$ cd examples/simple
-$ yarn link @pulumi/fcknat
-$ yarn install
-$ pulumi stack init test
-$ pulumi up
-```
+### Development Workflow
 
-Now that you have completed all of the above steps, you have a working provider that generates a random string for you.
+1. Make changes to the provider implementation in `provider/fcknatComponent.go`
+2. Build the provider with `make provider`
+3. Build all SDKs with `make build`
+4. Install all SDKs with `make install`
+5. Test your changes with a sample program
 
-#### A brief repository overview
+## Notes for macOS Users
 
-You now have:
-
-1. A `provider/` folder containing the building and implementation logic
-    1. `cmd/pulumi-resource-fcknat/main.go` - holds the provider's sample implementation logic.
-2. `deployment-templates` - a set of files to help you around deployment and publication
-3. `sdk` - holds the generated code libraries created by `pulumi-gen-fcknat/main.go`
-4. `examples` a folder of Pulumi programs to try locally and/or use in CI.
-5. A `Makefile` and this `README`.
-
-#### Additional Details
-
-This repository depends on the pulumi-go-provider library. For more details on building providers, please check
-the [Pulumi Go Provider docs](https://github.com/pulumi/pulumi-go-provider).
-
-### Build Examples
-
-Create an example program using the resources defined in your provider, and place it in the `examples/` folder.
-
-You can now repeat the steps for [build, install, and test](#test-against-the-example).
-
-## Configuring CI and releases
-
-1. Follow the instructions laid out in the [deployment templates](./deployment-templates/README-DEPLOYMENT.md).
+When building the Python SDK on macOS, you might encounter an "externally-managed-environment" error. The Makefile has been updated to handle this by using virtual environments for Python operations.
 
 ## References
 
-Other resources/examples for implementing providers:
-* [Pulumi Command provider](https://github.com/pulumi/pulumi-command/blob/master/provider/pkg/provider/provider.go)
-* [Pulumi Go Provider repository](https://github.com/pulumi/pulumi-go-provider)
+- [fck-nat GitHub Repository](https://github.com/AndrewGuenther/fck-nat)
+- [Pulumi Resource Providers](https://www.pulumi.com/docs/using-pulumi/pulumi-packages/how-to-author/)

@@ -13,7 +13,8 @@
         "strict": true
     },
     "files": [
-        "fckNat.ts",
+        "gateway/fckNat.ts",
+        "gateway/index.ts",
         "index.ts",
         "provider.ts",
         "utilities.ts"
